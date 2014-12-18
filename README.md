@@ -37,7 +37,7 @@ create an inventory file, whose name is "hosts"
 $ vi hosts
 ```
 following content  
-access by the name "web"  
+access by the name "web" in a playbook file 
 ```
 [web]
 web

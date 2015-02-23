@@ -4,7 +4,6 @@
   vars:
     node_version: '0.10.31'
     node_path: '/opt/node'
-
   tasks:
     - name: add a new user
       user: name=ishikawa
@@ -21,8 +20,14 @@
     - name: install apache
       yum: name=httpd state=latest
 
+    - name: copy httpd.conf to remote
+      copy: src=./conf/httpd.conf dest=/etc/httpd/conf/
+
     - name: start apache and enabled
       service: name=httpd state=started enabled=yes
+
+    - name: on apache
+      action: command /sbin/chkconfig httpd on
 
     - name: Disable iptables
       action: service name=iptables state=stopped enabled=false
@@ -60,13 +65,12 @@
       service: name=mysqld state=started enabled=yes
 
     - name: create a database
-      mysql_db: name=mydb state=present
+      mysql_db: name=testdb state=present encoding=utf8
 
     - name: create a user for mydb
-      mysql_user: name=dbuser password=dbpassword priv=mydb.*:ALL state=present
+      mysql_user: name=**** password=**** priv=testdb.*:ALL state=present
 
     - include: nodejs.yml
-
   handlers:
     - name: restart apache
       service: name=httpd state=restarted

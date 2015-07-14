@@ -23,6 +23,14 @@
     - name: copy httpd.conf to remote
       copy: src=./conf/httpd.conf dest=/etc/httpd/conf/
 
+    - name: install php packages
+      yum: name={{item}} state=latest
+      with_items:
+        - php
+        - php-devel
+        - php-mbstring
+        - php-mysql
+
     - name: start apache and enabled
       service: name=httpd state=started enabled=yes
 
@@ -41,16 +49,6 @@
     - name: create sim link
       file: src=/vagrant/html dest=/var/www/html owner=vagrant group=vagrant state=link
 
-    - name: install php packages
-      yum: name={{item}} state=latest
-      with_items:
-        - php
-        - php-devel
-        - php-mbstring
-        - php-mysql
-      notify:
-        - restart apache
-
     #- name: copy hello.php
     #  copy: src=./hello.php dest=/var/www/html/hello.php owner=vagrant
 
@@ -65,12 +63,12 @@
       service: name=mysqld state=started enabled=yes
 
     - name: create a database
-      mysql_db: name=testdb state=present encoding=utf8
+      mysql_db: name=mydb state=present encoding=utf8
 
     - name: create a user for mydb
-      mysql_user: name=**** password=**** priv=testdb.*:ALL state=present
+      mysql_user: name=mysql password=mysql priv=testdb.*:ALL state=present
 
-    - include: nodejs.yml
+    #- include: nodejs.yml
   handlers:
     - name: restart apache
       service: name=httpd state=restarted
